@@ -1,0 +1,72 @@
+name: Build and Generate Test and Prod Artifacts
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+ 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+ 
+      - name: Install dependencies
+        run: npm ci
+ 
+      - name: Build test Artifacts
+        run: npm run build
+ 
+      - name: Copy package.json for test artifacts
+        run: cp package.json dist/
+ 
+      - name: Upload test Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-build
+          path: dist/**
+          include-hidden-files: true
+ 
+  build-prod:
+    runs-on: ubuntu-latest
+    needs: build-test
+ 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+ 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+ 
+      - name: Install dependencies
+        run: npm ci
+ 
+      - name: Build Production Artifacts
+        run: npm run build
+       
+      - name: Copy package.json for Production artifacts
+        run: cp package.json dist/
+ 
+      - name: Upload Production Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prod-build
+          path: dist/**
+          include-hidden-files: true
+     
+      - name: Upload app_startup.config.cjs
+        uses: actions/upload-artifact@v4
+        with:
+          name: config-cjs
+          path: app_startup.config.cjs

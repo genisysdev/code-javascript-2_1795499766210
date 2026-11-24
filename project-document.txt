@@ -1,0 +1,2 @@
+DATABASE_URL=mongodb://localhost:27017/sdlc
+CODE_GENERATION_SERVICE = "AIzaSyDIb1EZ-kUSe1o-tLRhznkXaS1WsqJ042o"
